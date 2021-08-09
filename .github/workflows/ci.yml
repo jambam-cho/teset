@@ -1,0 +1,32 @@
+name: Preview Service #workflow에 보이는 이름
+
+on: #필수값
+  pull_request: #pull_request가 생성될때
+    types: [closed]
+  issue_comment: #comment가 달릴때
+    types: [created]
+
+
+env: #환경변수 설정 / Key-value
+  APPLICATION: ohs_web
+  BUILD_ENV: staging
+  PROFILE: stage
+  MANIFEAT_PATH: ohs-web/server
+  ECR_REPOSITORY: ohs_web
+  BASE_DOMAIN: stage1.dailyhou.se
+  DESTINATION: ok-cluster-staging-01
+
+jobs: #여기서 실행
+  check-comment: #아무 이름 만들어도됨
+    runs-on: ubuntu-latest #어떤 환경에서 돌릴지
+    if: github.event.action != 'closed'
+    outputs:
+      triggered: ${{ steps.check.outputs.triggered }}
+    steps:
+    - uses: khan/pull-request-comment-trigger@master
+      id: check
+      with:
+        trigger: '/preview'
+        reaction: rocket
+      env:
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
