@@ -217,7 +217,6 @@ jobs:
     steps:
       - name: Comment on PR
         uses: allthatjazzleo/actions-pull-request-add-comment@master
-        with:
           message: |-
             🚀 preview endpoint 가 생성되었습니다.
             ```
