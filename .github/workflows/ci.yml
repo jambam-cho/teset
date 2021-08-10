@@ -216,9 +216,6 @@ jobs:
     steps:
       - name: Comment PR
         uses: allthatjazzleo/actions-pull-request-add-comment@master
-        if: >-
-          github.event_name == 'pull_request' || (github.event_name == 'issue_comment' 
-          && github.event.comment.body == '/build' )
         with:
           message: '🚀 배포가 완료되었습니다.'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
