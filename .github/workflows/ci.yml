@@ -1,6 +1,8 @@
 name: test #workflow에 보이는 이름
 
 on: #필수값
+  pull_request: #pull_request가 생성될때
+    types: [closed]
   issue_comment: #comment가 달릴때
     types: [created]
 
