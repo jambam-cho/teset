@@ -1,0 +1,20 @@
+name: test #workflow에 보이는 이름
+
+on: #필수값
+  issue_comment: #comment가 달릴때
+    types: [created]
+
+jobs: #여기서 실행
+  check-comment: #아무 이름 만들어도됨
+    runs-on: ubuntu-latest #어떤 환경에서 돌릴지
+    if: github.event.action != 'closed'
+    outputs:
+      triggered: ${{ steps.check.outputs.triggered }}
+    steps:
+    - uses: khan/pull-request-comment-trigger@master
+      id: check
+      with:
+        trigger: '/build'
+        reaction: rocket
+      env:
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
