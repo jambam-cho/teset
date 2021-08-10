@@ -4,7 +4,7 @@ on:
     types: [closed]
     branches:
       - main
-  issue_comment: #comment가 달릴때
+  issue_comment:
     types: [created]
 
 env:
@@ -209,24 +209,9 @@ jobs:
           - image_tag: `${{ steps.parse-build-artifact.outputs.image_tag }}`
           - git_sha: `${{ steps.parse-build-artifact.outputs.git_sha }}`
           - trigger: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-  # comment-on-pr:
-  #   runs-on: ubuntu-latest
-  #   name: A job to comment a PR
-  #   needs: check-comment #deploy_request
-  #   steps:
-  #     - name: Comment on PR
-  #       uses: allthatjazzleo/actions-pull-request-add-comment@master
-  #       with:
-  #         message: |-
-  #           🚀 preview endpoint 가 생성되었습니다.
-  #           ```
-  #           http://${{ steps.pr.outputs.endpoint }}
-  #           ```
-  #         GITHUB_TOKEN: ${{ secrets.UPDATE_GITHUB_TOKEN }}
-  example_comment_pr:
+  comment-on-pr:
     runs-on: ubuntu-latest
-    name: An example job to comment a PR
+    name: job to comment a PR
     needs: check-comment
     steps:
       - name: Comment PR
