@@ -213,6 +213,7 @@ jobs:
     runs-on: ubuntu-latest
     name: job to comment a PR
     needs: check-comment
+    if: needs.check-comment.outputs.triggered == 'false'
     steps:
       - name: Comment PR
         uses: allthatjazzleo/actions-pull-request-add-comment@master
