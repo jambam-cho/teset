@@ -1,22 +1,211 @@
-name: test #workflow에 보이는 이름
-
-on: #필수값
-  pull_request: #pull_request가 생성될때
+name: CI
+on:
+  pull_request:
     types: [closed]
+    branches:
+      - main
   issue_comment: #comment가 달릴때
     types: [created]
-
-jobs: #여기서 실행
-  check-comment: #아무 이름 만들어도됨
-    runs-on: ubuntu-latest #어떤 환경에서 돌릴지
-    if: github.event.action != 'closed'
+    branches:
+      - main
+env:
+  SERVICE_NAME: ohs_web
+jobs:
+  check-comment: 
+    runs-on: ubuntu-latest 
+    if: github.event.action != 'closed' 
     outputs:
-      triggered: ${{ steps.check.outputs.triggered }}
+      triggered: ${{ steps.check.outputs.triggered }} 
     steps:
-    - uses: khan/pull-request-comment-trigger@master
-      id: check
-      with:
-        trigger: '/build'
-        reaction: rocket
+    - uses: khan/pull-request-comment-trigger@master 
+      id: check 
+      with: 
+        trigger: '/build' 
+        reaction: rocket 
       env:
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
+
+  prepare-build:
+    name: Prepare Build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/')
+    outputs:
+      git_sha: ${{ steps.checkout-branch.outputs.git_sha }}
+      image_tag: ${{ steps.checkout-branch.outputs.image_tag }}
+      release_version: ${{ steps.checkout-branch.outputs.release_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Checkout branch
+        id: checkout-branch
+        run: |
+          if [ ${GITHUB_EVENT_NAME} == "workflow_dispatch" ] && [ ! -z "${{ github.event.inputs.branch }}" ]; then
+            git checkout ${{ github.event.inputs.branch }}
+            GIT_SHA="$(git rev-parse HEAD)"
+            echo "::set-output name=git_sha::${GIT_SHA}"
+            echo "::set-output name=image_tag::$(date +'%Y%m%d%H%M')-${GIT_SHA::10}"
+          else
+            echo "::set-output name=git_sha::${GITHUB_SHA}"
+            echo "::set-output name=image_tag::$(date +'%Y%m%d%H%M')-${GITHUB_SHA::10}"
+          fi
+          # 'release/**' 브랜치에서 'release/' 문자열을 제거한 나머지를 버전으로 사용
+          RELEASE_BRANCH="${{ github.head_ref }}"
+          RELEASE_VERSION="${RELEASE_BRANCH/release\//}"
+          echo "::set-output name=release_version::${RELEASE_VERSION}"
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: prepare-build
+    strategy:
+      matrix:
+        rails_env:
+          - production
+          - staging
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+      - name: Login AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build docker image
+        id: build-docker-image
+        env:
+          LATEST_DOCKER_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.SERVICE_NAME }}:${{ matrix.rails_env }}-latest
+        run: |
+          docker pull $LATEST_DOCKER_IMAGE || true
+          docker build \
+            --build-arg NPM_TOKEN="${{ secrets.NPM_TOKEN }}" \
+            --build-arg BUILD_ENV=${{ matrix.rails_env }} \
+            --cache-from $LATEST_DOCKER_IMAGE \
+            --file ./docker/Dockerfile \
+            -t $LATEST_DOCKER_IMAGE .
+          echo "::set-output name=latest_docker_image::$LATEST_DOCKER_IMAGE"
+      - name: Retagging docker image
+        id: retagging-docker-image
+        if: matrix.rails_env == 'production'
+        run: |
+          ECR_DOCKER_IMAGE="${{ steps.login-ecr.outputs.registry }}/${{ env.SERVICE_NAME }}"
+          ECR_DOCKER_IMAGE_TAG="${ECR_DOCKER_IMAGE}:${{ needs.prepare-build.outputs.image_tag }}"
+          ECR_DOCKER_IMAGE_VERSION_TAG="${ECR_DOCKER_IMAGE}:${{ needs.prepare-build.outputs.release_version }}"
+          docker tag ${{ steps.build-docker-image.outputs.latest_docker_image }} $ECR_DOCKER_IMAGE_TAG
+          docker tag ${{ steps.build-docker-image.outputs.latest_docker_image }} $ECR_DOCKER_IMAGE_VERSION_TAG
+          echo "::set-output name=ecr_docker_image::$ECR_DOCKER_IMAGE"
+          echo "::set-output name=ecr_docker_image_tag::$ECR_DOCKER_IMAGE_TAG"
+          echo "::set-output name=ecr_docker_image_version_tag::$ECR_DOCKER_IMAGE_VERSION_TAG"
+      - name: Upload docker image to ECR
+        id: upload-ecr-docker-image
+        run: |
+          docker push ${{ steps.build-docker-image.outputs.latest_docker_image }}
+          if [ ${{ matrix.rails_env }} == "production" ]; then
+            docker push ${{ steps.retagging-docker-image.outputs.ecr_docker_image_tag }}
+            docker push ${{ steps.retagging-docker-image.outputs.ecr_docker_image_version_tag }}
+          fi
+      - name: Add comment docker image tag
+        uses: mshick/add-pr-comment@v1
+        if: matrix.rails_env == 'production'
+        with:
+          message: |
+            🐳  도커 이미지 빌드가 완료 되었습니다.
+            ```
+            ${{ steps.retagging-docker-image.outputs.ecr_docker_image_tag }}
+            ${{ steps.retagging-docker-image.outputs.ecr_docker_image_version_tag }}
+            ```
+          repo-token: ${{ secrets.UPDATE_GITHUB_TOKEN }}
+          repo-token-user-login: 'bp-deployer'
+          allow-repeats: true
+      - name: Create result artifact
+        if: matrix.rails_env == 'production'
+        run: |
+          echo "{\"name\": \"${{ env.SERVICE_NAME }}\", \"image\": \"${{ steps.retagging-docker-image.outputs.ecr_docker_image}}\", \"image_tag\": \"${{ needs.prepare-build.outputs.image_tag }}\", \"git_sha\": \"${{ needs.prepare-build.outputs.git_sha }}\", \"version\": \"${{ needs.prepare-build.outputs.release_version }}\", \"branch\": \"${{ github.head_ref }}\"}" | jq . > result.json
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        if: matrix.rails_env == 'production'
+        with:
+          name: build-artifact
+          path: result.json
+  deploy_request:
+    name: Deploy request
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/')
+    steps:
+    - name: Checkout ohouse_cloud_landscape repository
+      uses: actions/checkout@v2
+      with:
+        repository: 'bucketplace/ohouse_cloud_landscape'
+        token: ${{ secrets.UPDATE_GITHUB_TOKEN }}
+        fetch-depth: 0
+    - name: Download build result artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: build-artifact
+        path: '.github/build_artifact'
+    - name: Parse build result artifact
+      id: parse-build-artifact
+      run: |
+        echo "::set-output name=image_tag::$(cat .github/build_artifact/result.json | jq -r '.image_tag')"
+        echo "::set-output name=ecr_docker_image::$(cat .github/build_artifact/result.json | jq -r '.image')"
+        echo "::set-output name=git_sha::$(cat .github/build_artifact/result.json | jq -r '.git_sha')"
+        echo "::set-output name=version::$(cat .github/build_artifact/result.json | jq -r '.version')"
+    - name: Request staging delivery flow
+      uses: bucketplace/flow-request-action@v1.0
+      env:
+        AUTH_TOKEN: ${{ secrets.OPSMONSTER_AUTH_TOKEN }}
+        BASE_URL: ${{ secrets.OPSMONSTER_BASE_URL }}
+      with:
+        application: '${{ env.SERVICE_NAME }}'
+        flow: 'staging'
+        version: '${{ steps.parse-build-artifact.outputs.version }}'
+        branch: '${{ github.head_ref }}'
+        image: '${{ steps.parse-build-artifact.outputs.ecr_docker_image }}'
+        image-tag: '${{ steps.parse-build-artifact.outputs.image_tag }}'
+        git-sha: '${{ steps.parse-build-artifact.outputs.git_sha }}'
+    - name: Update ohouse_cloud_landscape manifest
+      uses: bucketplace/replace-matching-array-yaml-action@v0.2.0
+      with:
+        source-file: '.github/build_artifact/result.json'
+        target-file: './manifests/services/${{ env.SERVICE_NAME }}.yaml'
+        matching-key: 'name'
+    - name: Create Stage branch
+      run: |
+        git branch stage > /dev/null 2>&1
+    - name: Push Stage branch
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.UPDATE_GITHUB_TOKEN }}
+        branch: 'stage'
+        repository: 'bucketplace/ohouse_cloud_landscape'
+        force: true
+    - name: Request staging deployment
+      uses: peter-evans/create-pull-request@v3.5.1
+      with:
+        token: ${{ secrets.UPDATE_GITHUB_TOKEN }}
+        title: 'Deploy Staging ${{ env.SERVICE_NAME }}/${{ github.head_ref }} #${{ steps.parse-build-artifact.outputs.image_tag }}'
+        base: stage
+        branch: '${{ env.SERVICE_NAME }}/${{ github.head_ref }}'
+        delete-branch: true
+        commit-message: 'Update service manifest'
+        committer: Github Action <action@github.com>
+        author: Github Action <action@github.com>
+        assignees: ${{ github.actor }}
+        labels: 'staging-deploy'
+        body: |
+          스테이지 배포 요청서
+          ----
+          - service_name: ${{ env.SERVICE_NAME }}
+          - branch: ${{ github.head_ref }}
+          - environment: staging
+          - docker_image: ${{ steps.parse-build-artifact.outputs.ecr_docker_image }}
+          - image_tag: `${{ steps.parse-build-artifact.outputs.image_tag }}`
+          - git_sha: `${{ steps.parse-build-artifact.outputs.git_sha }}`
+          - trigger: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
