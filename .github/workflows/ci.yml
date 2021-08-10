@@ -210,20 +210,36 @@ jobs:
           - git_sha: `${{ steps.parse-build-artifact.outputs.git_sha }}`
           - trigger: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-  comment-on-pr:
+  # comment-on-pr:
+  #   runs-on: ubuntu-latest
+  #   name: A job to comment a PR
+  #   needs: check-comment #deploy_request
+  #   steps:
+  #     - name: Comment on PR
+  #       uses: allthatjazzleo/actions-pull-request-add-comment@master
+  #       with:
+  #         message: |-
+  #           🚀 preview endpoint 가 생성되었습니다.
+  #           ```
+  #           http://${{ steps.pr.outputs.endpoint }}
+  #           ```
+  #         GITHUB_TOKEN: ${{ secrets.UPDATE_GITHUB_TOKEN }}
+  example_comment_pr:
     runs-on: ubuntu-latest
-    name: A job to comment a PR
-    needs: check-comment #deploy_request
+    name: An example job to comment a PR
     steps:
-      - name: Comment on PR
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Comment PR
         uses: allthatjazzleo/actions-pull-request-add-comment@master
+        if: >-
+          github.event_name == 'pull_request' || (github.event_name == 'issue_comment' 
+          && github.event.comment.body == '/build' )
         with:
-          message: |-
-            🚀 preview endpoint 가 생성되었습니다.
-            ```
-            http://${{ steps.pr.outputs.endpoint }}
-            ```
-          GITHUB_TOKEN: ${{ secrets.UPDATE_GITHUB_TOKEN }}
+          message: '🚀 배포가 완료되었습니다.'
+          # message: "echo ${{ github.event.comment.body }}' dynamic message
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   clean-up-build:
     runs-on: ubuntu-latest
