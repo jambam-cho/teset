@@ -211,13 +211,13 @@ jobs:
 
   comment-on-pr:
     runs-on: ubuntu-latest
+    name: A job to comment a PR
     needs: check-comment #deploy_request
     steps:
       - name: Comment on PR
         uses: allthatjazzleo/actions-pull-request-add-comment@master
         with:
-          message: |-
-            🚀 배포가 완료되었습니다.
+          message: '🚀 배포가 완료되었습니다.'
           GITHUB_TOKEN: ${{ secrets.UPDATE_GITHUB_TOKEN }}
 
   clean-up-build:
