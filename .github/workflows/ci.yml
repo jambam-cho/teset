@@ -5,18 +5,6 @@ on:
   issue_comment:
       types: [created]
 jobs:
-  weekday_job:
-    runs-on: ubuntu-latest
-    env:
-      DAY_OF_WEEK: Mon
-    steps:
-      - name: "Hello world when it's Monday"
-        if: ${{ env.DAY_OF_WEEK == 'Mon' }}
-        run: echo "Hello $FIRST_NAME $middle_name $Last_Name, today is Monday!"
-        env:
-          FIRST_NAME: Mona
-          middle_name: The
-          Last_Name: Octocataaaaaa
   check-comment: 
     runs-on: ubuntu-latest 
     if: github.event.action != 'closed' 
@@ -26,15 +14,19 @@ jobs:
     - uses: khan/pull-request-comment-trigger@master 
       id: check 
       with: 
-        trigger: '/build' 
+        trigger: '/clear' 
         reaction: rocket 
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
-  comment-on-pr:
-    runs-on: ubuntu-latest
-    name: job to comment a PR
+
+  build-and-push:
+    runs-on: ubuntu-latest 
     needs: check-comment
-    if: needs.check-comment.outputs.triggered == 'true'
+    if: needs.check-comment.outputs.triggered == 'true' && startsWith(github.head_ref, 'release/')
+    outputs:
+      git_sha: ${{ steps.checkout-branch.outputs.git_sha }}
+      image_tag: ${{ steps.checkout-branch.outputs.image_tag }}
+      release_version: ${{ steps.checkout-branch.outputs.release_version }}
     steps:
       - name: get pull request ref
         id: get_pull_request_ref
@@ -45,12 +37,30 @@ jobs:
           issue_id: ${{ github.event.issue.number }}
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
       - name: Checkout
         uses: actions/checkout@v2
         with:
           ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
-      - name: Comment PR
-        uses: allthatjazzleo/actions-pull-request-add-comment@master
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
-          message: '🚀 Workflows가 완료되었습니다.'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          
+      - name: Checkout branch
+        id: checkout-branch
+        run: |
+          if [ ${GITHUB_EVENT_NAME} == "workflow_dispatch" ] && [ ! -z "${{ github.event.inputs.branch }}" ]; then
+            git checkout ${{ github.event.inputs.branch }}
+            GIT_SHA="$(git rev-parse HEAD)"
+            echo "::set-output name=git_sha::${GIT_SHA}"
+            echo "::set-output name=image_tag::$(date +'%Y%m%d%H%M')-${GIT_SHA::10}"
+          else
+            echo "::set-output name=git_sha::${GITHUB_SHA}"
+            echo "::set-output name=image_tag::$(date +'%Y%m%d%H%M')-${GITHUB_SHA::10}"
+          fi
+          # 'release/**' 브랜치에서 'release/' 문자열을 제거한 나머지를 버전으로 사용
+          RELEASE_BRANCH="${{ github.head_ref }}"
+          RELEASE_VERSION="${RELEASE_BRANCH/release\//}"
+          echo "::set-output name=release_version::${RELEASE_VERSION}"
