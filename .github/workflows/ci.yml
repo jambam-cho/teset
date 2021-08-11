@@ -2,9 +2,7 @@ name: test
 on:
   pull_request:
     types: [open] 
-    branches:
-      - master
-    issue_comment:
+  issue_comment:
       types: [created]
 jobs:
   weekday_job:
