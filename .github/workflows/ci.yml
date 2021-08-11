@@ -5,18 +5,6 @@ on:
   issue_comment:
       types: [created]
 jobs:
-  weekday_job:
-    runs-on: ubuntu-latest
-    env:
-      DAY_OF_WEEK: Tue
-    steps:
-      - name: "Hello world when it's Monday"
-        if: ${{ env.DAY_OF_WEEK == 'Mon' }}
-        run: echo "Hello $FIRST_NAME $middle_name $Last_Name, today is Monday!"
-        env:
-          FIRST_NAME: Mona
-          middle_name: The
-          Last_Name: Octocat222222222
   check-comment: 
     runs-on: ubuntu-latest 
     if: github.event.action != 'closed' 
@@ -30,6 +18,26 @@ jobs:
         reaction: rocket 
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
+
+  build-and-push:
+    runs-on: ubuntu-latest 
+    needs: check-comment
+    if: needs.check-comment.outputs.triggered == 'true'
+    steps:
+      - name: get pull request ref
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/pulls/:issue_id
+          repository: ${{ github.repository }}
+          issue_id: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
   comment-on-pr:
     runs-on: ubuntu-latest
     name: job to comment a PR
