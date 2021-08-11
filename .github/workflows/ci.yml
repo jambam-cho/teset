@@ -8,7 +8,7 @@ jobs:
   weekday_job:
     runs-on: ubuntu-latest
     env:
-      DAY_OF_WEEK: Tue
+      DAY_OF_WEEK: Mon
     steps:
       - name: "Hello world when it's Monday"
         if: ${{ env.DAY_OF_WEEK == 'Mon' }}
@@ -16,7 +16,7 @@ jobs:
         env:
           FIRST_NAME: Mona
           middle_name: The
-          Last_Name: Octocat
+          Last_Name: Octocataaaaaa
   check-comment: 
     runs-on: ubuntu-latest 
     if: github.event.action != 'closed' 
@@ -26,7 +26,7 @@ jobs:
     - uses: khan/pull-request-comment-trigger@master 
       id: check 
       with: 
-        trigger: '/stop' 
+        trigger: '/build' 
         reaction: rocket 
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
@@ -36,6 +36,19 @@ jobs:
     needs: check-comment
     if: needs.check-comment.outputs.triggered == 'true'
     steps:
+      - name: get pull request ref
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/pulls/:issue_id
+          repository: ${{ github.repository }}
+          issue_id: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
       - name: Comment PR
         uses: allthatjazzleo/actions-pull-request-add-comment@master
         with:
