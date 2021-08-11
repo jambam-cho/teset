@@ -26,14 +26,10 @@ jobs:
     - uses: khan/pull-request-comment-trigger@master 
       id: check 
       with: 
-        trigger: '/build' 
+        trigger: '/stop' 
         reaction: rocket 
-      run: echo "Hello $FIRST_NAME $middle_name $Last_Name, today is Monday!"
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
-        FIRST_NAME: Mona
-        middle_name: The
-        Last_Name: Octocat
   comment-on-pr:
     runs-on: ubuntu-latest
     name: job to comment a PR
