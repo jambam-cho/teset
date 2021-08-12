@@ -22,11 +22,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       
       - run: echo ${{ github.ref }}
 
