@@ -1,33 +1,21 @@
 name: test
 on:
-  pull_request:
-    types: [closed] 
-  issue_comment:
-      types: [created]
-jobs:
-  check-comment: 
-    runs-on: ubuntu-latest 
-    if: github.event.action != 'closed' 
-    outputs:
-      triggered: ${{ steps.check.outputs.triggered }} 
-    steps:
-    - uses: khan/pull-request-comment-trigger@master 
-      id: check 
-      with: 
-        trigger: '/clear' 
-        reaction: rocket 
-      env:
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
+  push:
+    branches: [main]
 
+jobs:
   build-and-push:
     runs-on: ubuntu-latest 
-    needs: check-comment
-    if: needs.check-comment.outputs.triggered == 'true' && startsWith(github.head_ref, 'release/')
-    outputs:
-      git_sha: ${{ steps.checkout-branch.outputs.git_sha }}
-      image_tag: ${{ steps.checkout-branch.outputs.image_tag }}
-      release_version: ${{ steps.checkout-branch.outputs.release_version }}
     steps:
+      - run: echo ${{ github.ref }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - run: echo ${{ github.ref }}
+
       - name: get pull request ref
         id: get_pull_request_ref
         uses: octokit/request-action@v2.x
@@ -47,20 +35,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
-      - name: Checkout branch
-        id: checkout-branch
-        run: |
-          if [ ${GITHUB_EVENT_NAME} == "workflow_dispatch" ] && [ ! -z "${{ github.event.inputs.branch }}" ]; then
-            git checkout ${{ github.event.inputs.branch }}
-            GIT_SHA="$(git rev-parse HEAD)"
-            echo "::set-output name=git_sha::${GIT_SHA}"
-            echo "::set-output name=image_tag::$(date +'%Y%m%d%H%M')-${GIT_SHA::10}"
-          else
-            echo "::set-output name=git_sha::${GITHUB_SHA}"
-            echo "::set-output name=image_tag::$(date +'%Y%m%d%H%M')-${GITHUB_SHA::10}"
-          fi
-          # 'release/**' 브랜치에서 'release/' 문자열을 제거한 나머지를 버전으로 사용
-          RELEASE_BRANCH="${{ github.head_ref }}"
-          RELEASE_VERSION="${RELEASE_BRANCH/release\//}"
-          echo "::set-output name=release_version::${RELEASE_VERSION}"
+      
+      - run: echo ${{ github.ref }}
+    
