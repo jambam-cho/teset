@@ -36,4 +36,12 @@ jobs:
           fetch-depth: 0
       
       - run: echo ${{ github.ref }}
+
+      - uses: khan/pull-request-comment-trigger@master 
+        id: check 
+        with: 
+          trigger: '/deploy' 
+          reaction: rocket 
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
     
