@@ -11,10 +11,6 @@ jobs:
       triggered: ${{ steps.check.outputs.triggered }} 
       GITHUB_HEAD_REF: ${{ steps.extract_branch.outputs.branch}}
     steps:
-      - name: Extract branch name
-        shell: bash
-        id: extract_branch
-        run: echo ::set-output name=branch::${GITHUB_REF#refs/*/}
 
       - name: get pull request ref
         id: get_pull_request_ref
@@ -30,6 +26,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
+
+      - name: Extract branch name
+        shell: bash
+        id: extract_branch
+        run: echo ::set-output name=branch::${GITHUB_REF#refs/*/}
 
       - uses: khan/pull-request-comment-trigger@master 
         id: check 
