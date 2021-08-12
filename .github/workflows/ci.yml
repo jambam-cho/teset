@@ -9,11 +9,11 @@ jobs:
     if: github.event.action != 'closed' 
     outputs:
       triggered: ${{ steps.check.outputs.triggered }} 
-      GITHUB_HEAD_REF: ${{ steps.get_branch.outputs.GITHUB_HEAD_REF}}
+      GITHUB_HEAD_REF: ${{ steps.get_branch.outputs.github_head_ref}}
     steps:
       - name: Get Branch
         id: get_branch
-        run: echo "::set-output name=GITHUB_HEAD_REF::${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}"
+        run: echo "::set-output name=github_head_ref::${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}"
 
       - name: get pull request ref
         id: get_pull_request_ref
