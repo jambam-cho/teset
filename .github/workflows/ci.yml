@@ -54,8 +54,3 @@ jobs:
           reaction: rocket 
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
-      
-      - run: echo ${{ steps.checkout-branch.outputs.git_sha }}
-      - run: echo ${{ steps.checkout-branch.outputs.image_tag }}
-      - run: echo ${{ steps.checkout-branch.outputs.release_version }}
-      - run: echo ${{ github.event.inputs.branch }}
