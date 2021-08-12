@@ -8,13 +8,6 @@ jobs:
     steps:
       - run: echo ${{ github.ref }}
 
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      
-      - run: echo ${{ github.ref }}
-
       - name: get pull request ref
         id: get_pull_request_ref
         uses: octokit/request-action@v2.x
