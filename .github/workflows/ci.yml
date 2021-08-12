@@ -9,12 +9,12 @@ jobs:
     if: github.event.action != 'closed' 
     outputs:
       triggered: ${{ steps.check.outputs.triggered }} 
-      GITHUB_HEAD_REF: ${{ steps.get_branch.outputs.github_head_ref}}
+      GITHUB_HEAD_REF: ${{ steps.extract_branch.outputs.branch}}
     steps:
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
 
       - name: get pull request ref
         id: get_pull_request_ref
