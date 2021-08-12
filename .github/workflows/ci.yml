@@ -16,13 +16,30 @@ jobs:
     outputs:
       triggered: ${{ steps.check.outputs.triggered }} 
     steps:
-    - uses: khan/pull-request-comment-trigger@master 
-      id: check 
-      with: 
-        trigger: '/build' 
-        reaction: rocket 
-      env:
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
+      - name: get pull request ref
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/pulls/:issue_id
+          repository: ${{ github.repository }}
+          issue_id: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
+
+      - uses: khan/pull-request-comment-trigger@master 
+        id: check 
+        with: 
+          trigger: '/clear' 
+          reaction: rocket 
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
+      - run: echo ${{ github.head_ref }}
+
 
   prepare-build:
     name: Prepare Build
