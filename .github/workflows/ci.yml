@@ -40,6 +40,9 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
       - run: echo ${{ github.head_ref }}
 
+      - name: check-branch
+        run: echo "${{ steps.extract_branch.outputs.branch }}"
+
   build-and-push:
     runs-on: ubuntu-latest 
     needs: check-comment
