@@ -52,16 +52,16 @@ jobs:
       image_tag: ${{ steps.checkout-branch.outputs.image_tag }}
       release_version: ${{ steps.checkout-branch.outputs.release_version }}
     steps:
-      - name: echo ${{ github.ref }}
-      - name: echo ${{ github.head_ref }}
+      - run: echo ${{ github.ref }}
+      - run: echo ${{ github.head_ref }}
 
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
       
-      - name: echo ${{ github.ref }}
-      - name: echo ${{ github.head_ref }}
+      - run: echo ${{ github.ref }}
+      - run: echo ${{ github.head_ref }}
           
       - name: Checkout branch
         id: checkout-branch
