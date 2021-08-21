@@ -1,40 +1,14 @@
-name: test
+name: Preview Service
+
 on:
-  push:
-    branches: [main]
+  push
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest 
+  pr_commented:
+    # This job only runs for pull request comments
+    name: PR comment
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.ref }}
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      
-      - run: echo ${{ github.ref }}
-
-      - name: get pull request ref
-        id: get_pull_request_ref
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/:repository/pulls/:issue_id
-          repository: ${{ github.repository }}
-          issue_id: ${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      
-      - run: echo ${{ github.ref }}
-    
+      - run: |
+          echo "Comment on PR #${{ github.event.issue.number }}"
