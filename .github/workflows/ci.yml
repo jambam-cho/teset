@@ -3,39 +3,12 @@ name: Preview Service
 on:
   push
 
-env:
-  APPLICATION: ohs_web
-  BUILD_ENV: staging
-  PROFILE: stage
-  MANIFEAT_PATH: ohs-web/server
-  ECR_REPOSITORY: ohs_web
-  BASE_DOMAIN: stage1.dailyhou.se
-  DESTINATION: ok-cluster-staging-01
-
 jobs:
-
-  build-and-push:
+  pr_commented:
+    # This job only runs for pull request comments
+    name: PR comment
+    if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.vars.outputs.image_tag }}
-      pr_ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
-      issue_id: ${{ steps.test.outputs.issue_id }}
     steps:
-      - name: get pull request ref
-        id: get_pull_request_ref
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/:repository/pulls/:issue_id
-          repository: ${{ github.repository }}
-          issue_id: ${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
-      
-      - name: get Issue Id
-        id: test
-        run: echo "::set-output name=issue_id::${{ github.event.issue.number }}"
+      - run: |
+          echo "Comment on PR #${{ github.event.issue.number }}"
