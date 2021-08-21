@@ -3,20 +3,31 @@ name: Preview Service
 on: issue_comment
 
 jobs:
-  pr_commented:
-    # This job only runs for pull request comments
-    name: PR comment
-    if: ${{ github.event.issue.pull_request }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Comment on PR #${{ github.event.issue.number }}"
 
-  issue_commented:
-    # This job only runs for issue comments
-    name: Issue comment
-    if: ${{ !github.event.issue.pull_request }}
+  build-and-push:
     runs-on: ubuntu-latest
+    outputs:
+      pr_ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
     steps:
-      - run: |
-          echo "Comment on issue #${{ github.event.issue.number }}"
+      - name: get pull request ref
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/pulls/:issue_id
+          repository: ${{ github.repository }}
+          issue_id: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
+      
+      - name: test
+        id: test
+        run: echo "${{ github.event.issue.number }}"
+
+      - name: test2
+        id: test2
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data) }}"
