@@ -34,4 +34,4 @@ jobs:
       
       - name: test3
         id: test3
-        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}"
+        run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
