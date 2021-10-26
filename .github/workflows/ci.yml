@@ -18,7 +18,6 @@ jobs:
           issue_id: ${{ github.event.issue.number }}
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - run: "echo latest release: ${{ fromJson(steps.get_pull_request_ref.outputs.data) }}"
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -36,3 +35,7 @@ jobs:
       - name: test3
         id: test3
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}"
+        
+      - name: test4
+        id: test4
+        run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
