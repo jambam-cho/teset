@@ -18,6 +18,7 @@ jobs:
           issue_id: ${{ github.event.issue.number }}
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - run: "echo latest release: ${{ fromJson(steps.get_pull_request_ref.outputs.data) }}"
 
       - name: Checkout
         uses: actions/checkout@v2
