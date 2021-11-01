@@ -7,7 +7,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     outputs:
-      pr_ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
+      pr_ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}
       pr_assignee: ${{ fromJson(steps.get_pull_request_ref.outputs.data).assignee.login }}
     steps:
       - name: get pull request ref
