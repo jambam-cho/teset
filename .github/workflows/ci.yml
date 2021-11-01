@@ -40,4 +40,12 @@ jobs:
       - name: test4
         id: test4
         run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
+        
+      - name: test5
+        id: test5
+        run: echo "${{ build-and-push.outputs.pr_ref }}"
+        
+      - name: test6
+        id: test6
+        run: echo "${{ build-and-push.outputs.pr_assignee }}"
       
