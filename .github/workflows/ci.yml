@@ -47,5 +47,9 @@ jobs:
         
       - name: test6
         id: test6
-        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).assignee.login }}"
+        run: echo "::set-output name=pr_assignee::${{ fromJson(steps.get_pull_request_ref.outputs.data).assignee.login }}"
+      
+      - name: test7
+        id: test7
+        run: echo "${{ steps.test6.pr_assignee }}"
       
