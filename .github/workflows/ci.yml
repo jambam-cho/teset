@@ -47,5 +47,5 @@ jobs:
       
       - name: test7
         id: test7
-        run: echo "${{ steps.test6.pr_assignee }}"
+        run: echo "${{ steps.test6.outputs.pr_assignee }}"
       
