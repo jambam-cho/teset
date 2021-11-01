@@ -43,9 +43,9 @@ jobs:
         
       - name: test5
         id: test5
-        run: echo "${{ build-and-push.outputs.pr_ref }}"
+        run: echo "${{ needs.build-and-push.outputs.pr_ref }}"
         
       - name: test6
         id: test6
-        run: echo "${{ build-and-push.outputs.pr_assignee }}"
+        run: echo "${{ needs.build-and-push.outputs.pr_assignee }}"
       
