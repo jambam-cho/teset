@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pr_ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
+      pr_assignee: ${{ fromJson(steps.get_pull_request_ref.outputs.data).assignee.login }}
     steps:
       - name: get pull request ref
         id: get_pull_request_ref
@@ -39,3 +40,4 @@ jobs:
       - name: test4
         id: test4
         run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
+      
