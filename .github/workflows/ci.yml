@@ -39,11 +39,3 @@ jobs:
       - name: test4
         id: test4
         run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
-        
-      - name: Setup AdoptOpenJDK
-        uses: joschi/setup-jdk@v2
-        with:
-          java-version: '11'
-        
-      - name: Install Datadog Java Client
-        run: wget -O build/libs/dd-java-agent.jar 'https://dtdg.co/latest-java-tracer'
