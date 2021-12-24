@@ -5,7 +5,7 @@ on: issue_comment
 jobs:
 
   build-and-push:
-    runs-on: [self-hosted, linux, ARM64]
+    runs-on: ubuntu-latest
     outputs:
       pr_ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}
       pr_assignee: ${{ steps.test6.outputs.pr_assignee }}
