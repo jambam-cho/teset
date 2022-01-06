@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pr_ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}
-      pr_assignee: ${{ steps.test6.outputs.pr_assignee }}
     steps:
       - name: get pull request ref
         id: get_pull_request_ref
@@ -45,10 +44,3 @@ jobs:
         id: test4
         run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
         
-      - name: test6
-        id: test6
-        run: echo "::set-output name=pr_assignee::${{ fromJson(steps.get_pull_request_ref.outputs.data).assignee.login }}"
-      
-      - name: test7
-        id: test7
-        run: echo "${{ steps.test6.outputs.pr_assignee }}"
