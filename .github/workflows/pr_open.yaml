@@ -1,4 +1,4 @@
-name: Preview Service
+name: PR OPEN
 
 on:
   pull_request:
