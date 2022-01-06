@@ -43,4 +43,3 @@ jobs:
       - name: test4
         id: test4
         run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
-        
