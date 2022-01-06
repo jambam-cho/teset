@@ -1,0 +1,45 @@
+name: PR OPEN
+
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - main
+
+jobs:
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      pr_ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}
+    steps:
+      - name: get pull request ref
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/pulls/:issue_id
+          repository: ${{ github.repository }}
+          issue_id: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
+      
+      - name: test
+        id: test
+        run: echo "${{ github.event.issue.number }}"
+
+      - name: test2
+        id: test2
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data) }}"
+      
+      - name: test3
+        id: test3
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}"
+        
+      - name: test4
+        id: test4
+        run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
