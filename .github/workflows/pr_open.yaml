@@ -1,10 +1,6 @@
 name: PR OPEN
 
-on:
-  pull_request:
-    types: [opened]
-    branches:
-      - main
+on: issue_comment
 
 jobs:
 
