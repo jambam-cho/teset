@@ -22,9 +22,14 @@ jobs:
 
       - name: milestone_full
         id: milestone_full
-        run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data) }}"
 
       - name: milestone_text
         id: milestone_text
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).*.name }}"
+
+      - name: milestone_text1
+        id: milestone_text1
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).0.name }}"
+
 
