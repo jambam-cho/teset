@@ -55,3 +55,22 @@ jobs:
       - name: description
         id: description
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).assignee.login }}"
+
+      - name: milestone_number
+        id: milestone_number
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.number }}"
+
+
+      - name: get pull request ref
+        id: get_pull_request_ref2
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/milestones/:milestone_number/labels
+          repository: ${{ github.repository }}
+          milestone_number: ${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: milestone_number
+        id: milestone_number
+        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}"
