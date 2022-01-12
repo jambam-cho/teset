@@ -1,0 +1,26 @@
+name: Preview Service
+
+on: issue_comment
+
+jobs:
+  get-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get pull request ref
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/milestones/:milestone_number/labels
+          repository: ${{ github.repository }}
+          milestone_number: ${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: milestone_full
+        id: milestone_full
+        run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
+
+      - name: milestone_text
+        id: milestone_text
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).*.name }}"
+

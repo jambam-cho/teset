@@ -12,6 +12,8 @@ env:
 jobs:
   get-env:
     runs-on: ubuntu-latest
+    outputs:
+      m_num: ${{
     steps:
       - name: get pull request ref
         id: get_pull_request_ref
