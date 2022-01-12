@@ -26,5 +26,5 @@ jobs:
 
       - name: milestone_text
         id: milestone_text
-        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).*.name }}"
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs).*.name }}"
 
