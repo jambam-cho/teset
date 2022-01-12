@@ -1,6 +1,10 @@
 name: Preview Service
 
-on: issue_comment
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - main2
 
 jobs:
   get-env:
