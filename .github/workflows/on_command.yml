@@ -16,7 +16,7 @@ jobs:
         with:
           route: GET /repos/:repository/milestones/:milestone_number/labels
           repository: ${{ github.repository }}
-          milestone_number: ${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.number }}
+          milestone_number: 1
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
