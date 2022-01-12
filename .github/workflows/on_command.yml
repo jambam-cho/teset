@@ -20,11 +20,16 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ fromJson(steps.get_pull_request_ref.outputs.data).head.ref }}
+
       - name: milestone_full
         id: milestone_full
-        run: echo "${{ steps.get_pull_request_ref.outputs }}"
+        run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
 
       - name: milestone_text
         id: milestone_text
-        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs).*.name }}"
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).*.name }}"
 
