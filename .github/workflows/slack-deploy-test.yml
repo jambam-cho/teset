@@ -56,8 +56,8 @@ jobs:
         id: description
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).assignee.login }}"
 
-      - name: milestone_number
-        id: milestone_number
+      - name: milestone_number_before
+        id: milestone_number_before
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.number }}"
 
 
