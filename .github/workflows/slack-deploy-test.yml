@@ -31,6 +31,10 @@ jobs:
         id: full
         run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
 
+      - name: full2
+        id: full2
+        run: echo "${{ github.event }}"
+
       - name: schedule
         id: schedule
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).created_at }}"
