@@ -17,8 +17,9 @@ jobs:
         id: get_pull_request_ref
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/:repository/pulls
+          route: GET /repos/:repository/pulls/:pr_id
           repository: ${{ github.repository }}
+          pr_id: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
@@ -31,9 +32,9 @@ jobs:
         id: full
         run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
 
-      - name: full2
+      - name: pr_num
         id: full2
-        run: echo "${{ github.event }}"
+        run: echo "${{ github.event.pull_request.number }}"
 
       - name: schedule
         id: schedule
