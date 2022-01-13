@@ -77,21 +77,21 @@ jobs:
 
       - name: milestone_full2
         id: milestone_full2
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items }}"
+        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).items }}"
 
       - name: milestone_full3
         id: milestone_full3
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items[0] }}"
+        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).items[0] }}"
 
       - name: milestone_full4
         id: milestone_full4
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items[0].titles }}"
+        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).items[0].titles }}"
 
       - name: milestone_full5
         id: milestone_full5
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).total_count }}"
+        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).total_count }}"
 
       - name: milestone_full6
         id: milestone_full6
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).incomplete_results }}"
+        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).incomplete_results }}"
 
