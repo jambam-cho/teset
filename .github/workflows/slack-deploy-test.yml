@@ -69,5 +69,5 @@ jobs:
 
       - name: milestone_full
         id: milestone_full
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items[0] }}"
+        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.items) }}"
 
