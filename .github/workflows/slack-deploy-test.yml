@@ -67,7 +67,7 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: driver
-        id: driver
+      - name: milestone_full
+        id: milestone_full
         run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items }}"
 
