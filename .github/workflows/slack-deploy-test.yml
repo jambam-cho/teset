@@ -61,9 +61,10 @@ jobs:
         id: get_pull_request_ref2
         uses: octokit/request-action@v2.x
         with:
-          route: GET /search/issues?q=milestone:milestone_title+type:pr+repo:repository
-          repository: ${{ github.repository }}
-          milestone_title: ${{ steps.vars.outputs.milestone_title }}
+#          route: GET /search/issues?q=milestone:milestone_title+type:pr+repo:repository
+#          repository: ${{ github.repository }}
+#          milestone_title: ${{ steps.vars.outputs.milestone_title }}
+          route: GET /search/issues?q=milestone:milestones_test+type:pr+repo:jambam-cho/teset
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
