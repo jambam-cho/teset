@@ -71,13 +71,25 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
+      - name: milestone_full11
+        id: milestone_full11
+        run: echo "${{ fromJSON(steps.get_pull_request_ref2.outputs.data) }}"
+
+      - name: milestone_full111
+        id: milestone_full111
+        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}"
+
+      - name: milestone_full1111
+        id: milestone_full1111
+        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}.items"
+
       - name: milestone_full
         id: milestone_full
         run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data) }}"
 
       - name: milestone_full2
         id: milestone_full2
-        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).items }}"
+        run: echo "${{ fromJSON(steps.get_pull_request_ref2.outputs.data).items }}"
 
       - name: milestone_full3
         id: milestone_full3
