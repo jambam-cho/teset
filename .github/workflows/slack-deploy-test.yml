@@ -74,7 +74,7 @@ jobs:
 
       - name: vars
         id: vars
-        run: echo '::set-output name=full::${{ fromJson(steps.get_pull_request_ref2.outputs.data) }}'
+        run: echo '::set-output name=full::${{ steps.get_pull_request_ref2.outputs.data }}'
 
       - name: get full
         id: full2
