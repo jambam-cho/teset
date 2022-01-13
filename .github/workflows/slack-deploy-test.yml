@@ -64,13 +64,13 @@ jobs:
 #          route: GET /search/issues?q=milestone:milestone_title+type:pr+repo:repository
 #          repository: ${{ github.repository }}
 #          milestone_title: ${{ steps.vars.outputs.milestone_title }}
-          route: GET /search/issues?q=milestone:milestones_test
+          route: GET /search/issues?q=milestone:jebal-dae-ra
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: milestone_full
-        id: milestone_full
-        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}"
+#      - name: milestone_full
+#        id: milestone_full
+#        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}"
 
       - name: milestone_full2
         id: milestone_full2
