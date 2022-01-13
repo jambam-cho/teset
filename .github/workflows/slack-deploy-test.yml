@@ -13,15 +13,15 @@ jobs:
   get-env:
     runs-on: ubuntu-latest
     steps:
-#      - name: get pull request ref
-#        id: get_pull_request_ref
-#        uses: octokit/request-action@v2.x
-#        with:
-#          route: GET /repos/:repository/pulls/:pr_id
-#          repository: ${{ github.repository }}
-#          pr_id: ${{ github.event.pull_request.number }}
-#        env:
-#          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: get pull request ref
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/pulls/:pr_id
+          repository: ${{ github.repository }}
+          pr_id: ${{ github.event.pull_request.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 #
 #      - name: Checkout
 #        uses: actions/checkout@v2
@@ -57,7 +57,7 @@ jobs:
 #        run: echo "::set-output name=milestone_title::${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.title }}"
 #
 
-      - name: get pull request ref
+      - name: get pull request ref2
         id: get_pull_request_ref2
         uses: octokit/request-action@v2.x
         with:
@@ -65,7 +65,9 @@ jobs:
 #          repository: ${{ github.repository }}
 #          milestone_title: ${{ steps.vars.outputs.milestone_title }}
           route: GET /search/issues
-          q: 'milestone:milestones_test+type:pr+repo:jambam-cho/teset'
+          milestone_title: ${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.title }}
+          repository: ${{ github.repository }}
+          q: milestone:milestone_title+type:pr+repo:repository
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
