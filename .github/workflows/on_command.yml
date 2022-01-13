@@ -1,4 +1,4 @@
-name: Preview Service
+name: deploy-test
 
 on:
   pull_request:
