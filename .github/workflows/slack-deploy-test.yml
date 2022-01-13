@@ -64,7 +64,7 @@ jobs:
 #          route: GET /search/issues?q=milestone:milestone_title+type:pr+repo:repository
 #          repository: ${{ github.repository }}
 #          milestone_title: ${{ steps.vars.outputs.milestone_title }}
-          route: GET /search/issues?q=q
+          route: GET /search/issues?q=milestone:milestones_test
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
@@ -78,5 +78,5 @@ jobs:
 
       - name: milestone_full3
         id: milestone_full3
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items }}"
+        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items[0] }}"
 
