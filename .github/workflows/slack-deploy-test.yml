@@ -12,8 +12,6 @@ env:
 jobs:
   get-env:
     runs-on: ubuntu-latest
-    outputs:
-      m_num: ${{
     steps:
       - name: get pull request ref
         id: get_pull_request_ref
@@ -54,25 +52,22 @@ jobs:
         id: driver
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).assignee.login }}"
 
-      - name: description
-        id: description
-        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).assignee.login }}"
-
-      - name: milestone_number_before
-        id: milestone_number_before
-        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.number }}"
+      - name: milestone_title
+        id: vars
+        run: echo "::set-output name=milestone_title::${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.title }}"
 
 
       - name: get pull request ref
         id: get_pull_request_ref2
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/:repository/milestones/:milestone_number/labels
+          route: GET /search/issues?q=milestone:milestone_title+type:pr+repo:repository
           repository: ${{ github.repository }}
-          milestone_number: ${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.number }}
+          milestone_title: ${{ steps.vars.outputs.milestone_title }}
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: milestone_number
-        id: milestone_number
-        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}"
+      - name: driver
+        id: driver
+        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items }}"
+
