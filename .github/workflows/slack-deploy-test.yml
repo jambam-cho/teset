@@ -79,11 +79,11 @@ jobs:
       - name: get full
         id: full2
         env:
-          FULL: ${{ steps.vars.outputs.full }
+          FULL: ${{ steps.vars.outputs.full }}
         run: $FULL
 
       - name: get full
         id: full3
         env:
-          FULL: ${{ steps.vars.outputs.full }
+          FULL: ${{ steps.vars.outputs.full }}
         run: $FULL.titles
