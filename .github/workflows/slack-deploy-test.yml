@@ -85,3 +85,11 @@ jobs:
         id: milestone_full4
         run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items[0].titles }}"
 
+      - name: milestone_full5
+        id: milestone_full5
+        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).total_count }}"
+
+      - name: milestone_full6
+        id: milestone_full6
+        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).incomplete_results }}"
+
