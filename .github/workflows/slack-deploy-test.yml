@@ -74,28 +74,16 @@ jobs:
 
       - name: vars
         id: vars
-        run: echo "::set-output name=full::${{ steps.get_pull_request_ref2.outputs.data }}"
+        run: echo '::set-output name=full::${{ fromJson(steps.get_pull_request_ref2.outputs.data) }}'
 
-      - name: var2
-        id: vars2
+      - name: get full
+        id: full2
         env:
-          FULL: ${{ steps.vars.outputs.full }}
-        run: echo "$FULL.titles"
+          FULL: ${{ steps.vars.outputs.full }
+        run: $FULL
 
-      - name: vars3
-        id: vars3
-        run: echo "${{ steps.vars.outputs.full.titles }}"
-
-      - name: vars4
-        id: vars4
+      - name: get full
+        id: full3
         env:
-          FULL: ${{ steps.vars.outputs.full }}
-        run: |
-          $FULL
-
-      - name: vars5
-        id: vars5
-        env:
-          FULL: ${{ steps.vars.outputs.full }}
-        run: |
-          $FULL.titles
+          FULL: ${{ steps.vars.outputs.full }
+        run: $FULL.titles
