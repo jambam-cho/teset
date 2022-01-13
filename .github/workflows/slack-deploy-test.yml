@@ -70,13 +70,13 @@ jobs:
 
       - name: milestone_full
         id: milestone_full
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items[*] }}"
+        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}"
 
       - name: milestone_full2
         id: milestone_full2
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data).items }}"
+        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}"
 
       - name: milestone_full3
         id: milestone_full3
-        run: echo "${{ fromJson(steps.get_pull_request_ref2.outputs.data) }}"
+        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}"
 
