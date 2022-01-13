@@ -71,39 +71,29 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: milestone_full11
-        id: milestone_full11
-        run: echo "${{ fromJSON(steps.get_pull_request_ref2.outputs.data) }}"
 
-      - name: milestone_full111
-        id: milestone_full111
-        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}"
+      - name: vars
+        id: vars
+        run: echo "::set-output name=full::${{ steps.get_pull_request_ref2.outputs.data }}"
 
-      - name: milestone_full1111
-        id: milestone_full1111
-        run: echo "${{ steps.get_pull_request_ref2.outputs.data }}.items"
+      - name: var2
+        id: vars2
+        env:
+          FULL: ${{ steps.vars.outputs.full }}
+        run: echo "$FULL.titles"
 
-      - name: milestone_full
-        id: milestone_full
-        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data) }}"
+      - name: vars3
+        id: vars3
+        run: echo "${{ steps.vars.outputs.full.titles }}"
 
-      - name: milestone_full2
-        id: milestone_full2
-        run: echo "${{ fromJSON(steps.get_pull_request_ref2.outputs.data).items }}"
+      - name: vars4
+        id: vars4
+        env:
+          FULL: ${{ steps.vars.outputs.full }}
+        run: $FULL.titles
 
-      - name: milestone_full3
-        id: milestone_full3
-        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).items[0] }}"
-
-      - name: milestone_full4
-        id: milestone_full4
-        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).items[0].titles }}"
-
-      - name: milestone_full5
-        id: milestone_full5
-        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).total_count }}"
-
-      - name: milestone_full6
-        id: milestone_full6
-        run: echo "${{ toJson(steps.get_pull_request_ref2.outputs.data).incomplete_results }}"
-
+      - name: vars5
+        id: vars5
+        env:
+          FULL: ${{ steps.vars.outputs.full }}
+        run: $FULL
