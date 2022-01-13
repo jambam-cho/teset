@@ -90,10 +90,10 @@ jobs:
         id: vars4
         env:
           FULL: ${{ steps.vars.outputs.full }}
-        run: $FULL.titles
+        run: ${{ FULL.titles }}
 
       - name: vars5
         id: vars5
         env:
           FULL: ${{ steps.vars.outputs.full }}
-        run: $FULL
+        run: ${{ FULL }}
