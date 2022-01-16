@@ -71,19 +71,10 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-
-      - name: vars
-        id: vars
-        run: echo '::set-output name=full::${{ steps.get_pull_request_ref2.outputs.data.items[0].title }}'
-
       - name: get full
         id: full2
-        env:
-          FULL: ${{ steps.vars.outputs.full }}
-        run: $FULL
+        run: ${{ fromJson(steps.get_pull_request_ref2.outputs.data) }}
 
       - name: get full
         id: full3
-        env:
-          FULL: ${{ steps.vars.outputs.full }}
-        run: $FULL.titles
+        run: ${{ toJson(steps.get_pull_request_ref2.outputs.data) }}
