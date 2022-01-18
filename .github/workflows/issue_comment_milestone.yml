@@ -34,4 +34,16 @@ jobs:
 
       - name: milestone_full3
         id: milestone_full3
-        run: echo "${{ steps.get_milestones_ref.outputs.data.items[0].title }}"
+        run: echo "${{ steps.get_milestones_ref.outputs.data.items[0] }}"
+
+      - name: milestone_full4
+        id: milestone_full4
+        run: echo "${{ steps.get_milestones_ref.outputs.data.items[1] }}"
+
+      - name: milestone_full5
+        id: milestone_full5
+        run: echo "${{ steps.get_milestones_ref.outputs.data.items[*] }}"
+
+      - name: milestone_full6
+        id: milestone_full6
+        run: echo "${{ steps.get_milestones_ref.outputs.data.items }}"
