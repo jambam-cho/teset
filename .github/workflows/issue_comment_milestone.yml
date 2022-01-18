@@ -61,13 +61,3 @@ jobs:
         env:
           FILES: fromJson(steps.get_milestones_ref.outputs.data).items.*.title
         run: for f in $FILES; do print $f; done
-
-      - name: milestone_full10
-        env:
-          FILES: fromJson(steps.get_milestones_ref.outputs.data).items.*.title
-        run: for f in $FILES; do echo ${{ f }}; done
-
-      - name: milestone_full11
-        env:
-          FILES: fromJson(steps.get_milestones_ref.outputs.data).items.*.title
-        run: for f in $FILES; do print ${{ f }}; done
