@@ -40,5 +40,5 @@ jobs:
         run: echo ${{ fromJson(steps.get_milestones_ref.outputs.data).items.* }}
 
       - name: milestone_full22
-        run: echo ${{ contains(fromJson(steps.get_milestones_ref.outputs.data).items.*, 'title') }}
+        run: echo ${{ contains(fromJson(steps.get_milestones_ref.outputs.data).items.*.title, 'README') }}
 
