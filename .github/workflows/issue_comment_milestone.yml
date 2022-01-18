@@ -36,6 +36,6 @@ jobs:
         id: milestone_full2
         run: echo "${{ steps.get_milestones_ref.outputs.data }}"
 
-      - name: milestone_full2
-        id: milestone_full2
-        run: echo "${{ steps.get_milestones_ref.outputs.data.items.title }}"
+      - name: milestone_full3
+        id: milestone_full3
+        run: echo "${{ steps.get_milestones_ref.outputs.data.items[0].title }}"
