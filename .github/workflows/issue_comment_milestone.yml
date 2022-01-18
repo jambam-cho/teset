@@ -37,5 +37,7 @@ jobs:
         run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).total_count }}"
 
       - name: milestone_full2
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).items.get[title] }}"
+        env:
+          json_var: ${{ fromJson(steps.get_milestones_ref.outputs.data).items.* }}
+        run: echo $json_var | jq '.[].title'
 
