@@ -1,6 +1,11 @@
 name: Preview Service
 
-on: issue_comment
+on:
+  workflow_run:
+    workflows: "Preview Service"
+    branches: main
+    types:
+      - completed
 
 jobs:
 
