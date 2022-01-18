@@ -38,11 +38,11 @@ jobs:
 
       - name: milestone_full4
         id: milestone_full4
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).items[1] }}"
+        run: echo "${{ steps.get_milestones_ref.outputs.data.items.*.title }}"
 
       - name: milestone_full5
         id: milestone_full5
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).items[*] }}"
+        run: echo "${{ toJson(steps.get_milestones_ref.outputs.data).items.*.title }}"
 
       - name: milestone_full6
         id: milestone_full6
