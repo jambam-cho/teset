@@ -30,4 +30,4 @@ jobs:
 
       - name: milestone_full
         id: milestone_full
-        run: echo "${{ toJson(steps.get_milestones_ref.outputs.data) }}"
+        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data) }}"
