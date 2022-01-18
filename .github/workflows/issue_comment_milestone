@@ -1,0 +1,29 @@
+name: Milestone
+
+on: issue_comment
+
+jobs:
+  slack-alert-deploy:
+  runs-on: ubuntu-latest
+    steps:
+      - name: get pull request ref
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/pulls/:pr_id
+          repository: ${{ github.repository }}
+          pr_id: ${{ github.event.pull_request.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: get milestones ref
+        id: get_milestones_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /search/issues
+          q: milestone:${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.title }}+type:pr+repo:${{ github.repository }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          
+      - name: milestone_full
+        id: milestone_full
+        run: echo "${{ toJson(steps.get_milestones_ref.outputs.data) }}"
