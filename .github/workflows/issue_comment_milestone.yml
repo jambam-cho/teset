@@ -37,5 +37,5 @@ jobs:
         run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).total_count }}"
 
       - name: milestone_full2
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).items.get(title) }}"
+        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).items.get[title] }}"
 
