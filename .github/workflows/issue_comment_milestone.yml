@@ -36,28 +36,6 @@ jobs:
         id: milestone_full3
         run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).total_count }}"
 
-      - name: milestone_full4
-        id: milestone_full4
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).items.*.title[0] }}"
+      - name: milestone_full2
+        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data.total_count) }}"
 
-      - name: milestone_full5
-        id: milestone_full5
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).items.* }}"
-
-      - name: milestone_full6
-        id: milestone_full6
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).items[0] }}"
-
-      - name: milestone_full7
-        id: milestone_full7
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).items.*.url[0] }}"
-
-      - name: milestone_full8
-        env:
-          FILES: fromJson(steps.get_milestones_ref.outputs.data).items.*.title
-        run: for f in $FILES; do echo $f; done
-
-      - name: milestone_full9
-        env:
-          FILES: fromJson(steps.get_milestones_ref.outputs.data).items.*.title
-        run: for f in $FILES; do print $f; done
