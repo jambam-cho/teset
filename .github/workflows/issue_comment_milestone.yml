@@ -4,7 +4,7 @@ on: issue_comment
 
 jobs:
   slack-alert-deploy:
-  runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: get pull request ref
         id: get_pull_request_ref
@@ -23,7 +23,7 @@ jobs:
           q: milestone:${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.title }}+type:pr+repo:${{ github.repository }}
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          
+
       - name: milestone_full
         id: milestone_full
         run: echo "${{ toJson(steps.get_milestones_ref.outputs.data) }}"
