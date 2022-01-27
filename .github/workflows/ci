@@ -1,11 +1,11 @@
 name: Preview Service
 
 on:
-  workflow_run:
-    workflows: "Preview Service"
-    branches: main
-    types:
-      - completed
+  push:
+    branches:
+      - main
+    paths:
+      - 'test/**'
 
 jobs:
 
