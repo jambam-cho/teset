@@ -64,19 +64,11 @@ jobs:
 
       - name: test5
         id: test5
-        run: echo "::set-output name=chart_location::${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}'
+        run: echo ::set-output name=chart_location::${{ fromJson(steps.get_pull_request_ref.outputs.data).body }} | grep path | awk '{print $4}'
 
       - name: test8
         id: test8
         run: ${{ steps.test5.outputs.chart_location }}
-
-      - name: Get short git sha
-        id: vars
-        run: echo "::set-output name=sha_short::$APP_PROFILE-$(git rev-parse --short HEAD)"
-
-      - name: test9
-        id: test9
-        run: ${{ steps.vars.outputs.sha_short }}
 
 
 #      - uses: actions/checkout@master
