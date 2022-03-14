@@ -54,7 +54,7 @@ jobs:
         id: test4
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}"
 
-      - name: test5
-        id: test5
-        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }} | grep path | awk '{print $4}' "
+#       - name: test5
+#         id: test5
+#         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }} | grep path | awk '{print $4}' "
 
