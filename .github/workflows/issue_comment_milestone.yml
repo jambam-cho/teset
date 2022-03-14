@@ -49,10 +49,18 @@ jobs:
       - name: test3
         id: test3
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}"
+
+      - name: test7
+        id: test7
+        run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
         
       - name: test4
         id: test4
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}"
+
+      - name: test6
+        id: test6
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" grep path'
 
       - name: test5
         id: test5
