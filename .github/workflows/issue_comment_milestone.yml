@@ -68,7 +68,8 @@ jobs:
 
       - name: test8
         id: test8
-        run: echo "::set-output name=CHART_LOCATION::${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}'
+        run: echo "${{ steps.test5.outputs.CHART_LOCATION }}"
+
 
 #      - uses: actions/checkout@master
 #      - name: helm-check
