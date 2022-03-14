@@ -60,9 +60,9 @@ jobs:
 
       - name: test6
         id: test6
-        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" grep path'
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path
 
       - name: test5
         id: test5
-        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" grep path | awk '{print $4}'
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}'
 
