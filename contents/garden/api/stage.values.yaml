@@ -1,4 +1,4 @@
-eplicaCount: 1
+replicaCount: 1
 app:
   name: garden-api
   profile: stage
@@ -6,6 +6,8 @@ app:
     enabled: true
   apm:
     enabled: true
+mesh:
+  enabled: true
 image:
   tag: "test"
   version: "test"
