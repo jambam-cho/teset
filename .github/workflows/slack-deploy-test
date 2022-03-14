@@ -57,6 +57,18 @@ jobs:
 #        run: echo "::set-output name=milestone_title::${{ fromJson(steps.get_pull_request_ref.outputs.data).milestone.title }}"
 #
 
+      - name: test2
+        id: test2
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data) }}"
+      
+      - name: test3
+        id: test3
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}"
+        
+      - name: test4
+        id: test4
+        run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
+
       - name: get pull request ref2
         id: get_pull_request_ref2
         uses: octokit/request-action@v2.x
