@@ -64,7 +64,7 @@ jobs:
 
       - name: test5
         id: test5
-        run: echo ::set-output name=chart_location::$({{ fromJson(steps.get_pull_request_ref.outputs.data).body }} | grep path | awk '{print $4}')
+        run: echo ::set-output name=chart_location::${{ fromJson(steps.get_pull_request_ref.outputs.data).body }} | grep path | awk '{print $4}'
 
       - name: test8
         id: test8
