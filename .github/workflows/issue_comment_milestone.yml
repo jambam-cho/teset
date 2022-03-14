@@ -64,11 +64,19 @@ jobs:
 
       - name: test5
         id: test5
-        run: echo "::set-output name=CHART_LOCATION::${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}'
+        run: echo "::set-output name=chart_location::${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}'
 
       - name: test8
         id: test8
-        run: echo "${{ steps.test5.outputs.CHART_LOCATION }}"
+        run: ${{ steps.test5.outputs.chart_location }}
+
+      - name: Get short git sha
+        id: vars
+        run: echo "::set-output name=sha_short::$APP_PROFILE-$(git rev-parse --short HEAD)"
+
+      - name: test9
+        id: test9
+        run: ${{ steps.vars.outputs.sha_short }}
 
 
 #      - uses: actions/checkout@master
@@ -82,5 +90,5 @@ jobs:
       - name: helm-check-2
         uses: igabaydulin/helm-check-action@0.1.4
         env:
-          CHART_LOCATION: ${{ steps.test5.outputs.CHART_LOCATION }}
-          CHART_VALUES: ${{ steps.test5.outputs.CHART_LOCATION }}/test.yaml
+          CHART_LOCATION: ${{ steps.test5.outputs.chart_location }}
+          CHART_VALUES: ${{ steps.test5.outputs.chart_location }}/test.yaml
