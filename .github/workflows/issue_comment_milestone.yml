@@ -28,19 +28,19 @@ jobs:
 #         env:
 #           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: milestone_full
-        id: milestone_full
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data) }}"
+#       - name: milestone_full
+#         id: milestone_full
+#         run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data) }}"
 
-      - name: milestone_full3
-        id: milestone_full3
-        run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).total_count }}"
+#       - name: milestone_full3
+#         id: milestone_full3
+#         run: echo "${{ fromJson(steps.get_milestones_ref.outputs.data).total_count }}"
 
-      - name: milestone_full2
-        run: echo ${{ fromJson(steps.get_milestones_ref.outputs.data).items.* }}
+#       - name: milestone_full2
+#         run: echo ${{ fromJson(steps.get_milestones_ref.outputs.data).items.* }}
 
-      - name: milestone_full22
-        run: echo ${{ join(fromJson(steps.get_milestones_ref.outputs.data).items.*.title, ', ') }}
+#       - name: milestone_full22
+#         run: echo ${{ join(fromJson(steps.get_milestones_ref.outputs.data).items.*.title, ', ') }}
 
       - name: test2
         id: test2
@@ -54,7 +54,7 @@ jobs:
         id: test4
         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}"
 
-#       - name: test5
-#         id: test5
-#         run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }} | grep path | awk '{print $4}' "
+      - name: test5
+        id: test5
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }} | grep path | awk '{print $4}' "
 
