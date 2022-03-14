@@ -42,3 +42,15 @@ jobs:
       - name: milestone_full22
         run: echo ${{ join(fromJson(steps.get_milestones_ref.outputs.data).items.*.title, ', ') }}
 
+      - name: test2
+        id: test2
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data) }}"
+      
+      - name: test3
+        id: test3
+        run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).html_url }}"
+        
+      - name: test4
+        id: test4
+        run: echo "${{ steps.get_pull_request_ref.outputs.data }}"
+
