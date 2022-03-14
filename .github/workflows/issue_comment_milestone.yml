@@ -66,6 +66,10 @@ jobs:
         id: test5
         run: echo "::set-output name=CHART_LOCATION::${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}'
 
+      - name: test8
+        id: test8
+        run: echo "::set-output name=CHART_LOCATION::${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}'
+
 #      - uses: actions/checkout@master
 #      - name: helm-check
 #        uses: igabaydulin/helm-check-action@0.1.4
@@ -77,5 +81,5 @@ jobs:
       - name: helm-check-2
         uses: igabaydulin/helm-check-action@0.1.4
         env:
-          CHART_LOCATION: ${{ steps.test5.outputs.CHART_LOCATION }}"
-          CHART_VALUES: ${{ steps.test5.outputs.CHART_LOCATION }}/test.yaml"
+          CHART_LOCATION: ${{ steps.test5.outputs.CHART_LOCATION }}
+          CHART_VALUES: ${{ steps.test5.outputs.CHART_LOCATION }}/test.yaml
