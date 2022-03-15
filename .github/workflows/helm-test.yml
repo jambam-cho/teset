@@ -53,6 +53,13 @@ jobs:
 #        env:
 #          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
 #          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/test.yaml
+      - name: test1
+        id: test1
+        run: hashFiles('${{ steps.vars.outputs.chart_location }}/dev.values.yaml')
+
+      - name: test2
+        id: test2
+        run: hashFiles('${{ steps.vars.outputs.chart_location }}/prod.values.yaml')
 
   check-dev-values:
     needs: get-chart-location
@@ -71,9 +78,10 @@ jobs:
     if: hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml) != ''
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: test2
+        id: test2
+        run: echo "Hello~~~~~~~~~~~~~"
 
-      - uses: igabaydulin/helm-check-action@0.1.4
-        env:
-          CHART_LOCATION: ${{ needs.get-chart-location.outputs.chart_location }}
-          CHART_VALUES: ${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml
+      - name: test1
+        id: test1
+        run: echo "hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml)"
