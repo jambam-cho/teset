@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "dry-run-sample.fullname" . }}
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "dry-run-sample.name" . }}
+        app: helm-check-action-sample
         release: {{ .Release.Name }}
     spec:
       containers:
