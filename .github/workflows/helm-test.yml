@@ -33,6 +33,20 @@ jobs:
           CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
           CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/dev.values.yaml
 
+      - name: stage-values
+        if: hashFiles(${{ steps.vars.outputs.chart_location }}/stage.values.yaml) != ''
+        uses: igabaydulin/helm-check-action@0.1.4
+        env:
+          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
+          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/stage.values.yaml
+
+      - name: prod-values
+        if: hashFiles(${{ steps.vars.outputs.chart_location }}/prod.values.yaml) != ''
+        uses: igabaydulin/helm-check-action@0.1.4
+        env:
+          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
+          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yaml
+
 #      - uses: actions/checkout@master
 #      - name: helm-check-2
 #        uses: igabaydulin/helm-check-action@0.1.4
