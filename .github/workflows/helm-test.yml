@@ -1,15 +1,10 @@
 name: Milestone
 
-#on:
-#  pull_request:
-#    types: [opened]
-#    branches:
-#      - main
-
 on:
-  push:
+  pull_request:
+    types: [opened]
     branches:
-      - deploy-test
+      - main
 
 jobs:
   get-chart-location:
