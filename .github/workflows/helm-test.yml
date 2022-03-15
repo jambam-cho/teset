@@ -40,9 +40,14 @@ jobs:
 #        id: test2
 #        run: echo "${{ hashFiles(${{ steps.vars.outputs.chart_location }}/test.yaml) }}"
 
+#      안됌
+#      - name: test3
+#        id: test3
+#        run: echo "${{ hashFiles("${{ steps.vars.outputs.chart_location }}") }}"
+
       - name: test3
         id: test3
-        run: echo "${{ hashFiles("${{ steps.vars.outputs.chart_location }}") }}"
+        run: echo "${{ hashFiles( ${{ steps.vars.outputs.chart_location }} ) }}"
 
 
 #  check-dev-values:
