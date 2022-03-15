@@ -85,9 +85,9 @@ jobs:
         uses: allthatjazzleo/actions-pull-request-add-comment@master
         with:
           message: |-
-            Helm chart 실패했습니다.
+            Helm chart 실패했습니다. 아래 링크에서 확인해주세요.
             ```
-            ${{ toJson(steps) }}
+            https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
             ```
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
