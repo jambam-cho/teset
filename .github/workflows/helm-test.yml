@@ -1,4 +1,4 @@
-name: Milestone
+name: helm-chart-test
 
 on:
   pull_request:
@@ -66,3 +66,11 @@ jobs:
         env:
           CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
           CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yamlocation.outputs.chart_location }}/prod.values.yaml)"
+
+      - name: Comment on PR
+        if: ${{ failure() }}
+        uses: allthatjazzleo/actions-pull-request-add-comment@master
+        with:
+          message: |-
+            Helm chart 실패했습니다.
+
