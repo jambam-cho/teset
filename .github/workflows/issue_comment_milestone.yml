@@ -74,9 +74,9 @@ jobs:
         id: test9
         run: echo "::set-output name=location::$(echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}')"
 
-      - name: test10
-        id: test10
-        run: ${{ steps.test9.outputs.location }}
+#      - name: test10
+#        id: test10
+#        run: ${{ steps.test9.outputs.location }}
 
 
 #      - uses: actions/checkout@master
