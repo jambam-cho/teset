@@ -72,7 +72,7 @@ jobs:
 
       - name: test9
         id: test9
-        run: echo "::set-output name=location::$(echo ${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}')"
+        run: echo "::set-output name=location::$(echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}')"
 
       - name: test10
         id: test10
