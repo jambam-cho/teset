@@ -58,6 +58,34 @@ jobs:
         id: test5
         run: echo "${{ hashFiles('"${{ steps.vars.outputs.chart_location }}"/dev.values.yaml') }}"
 
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: " ${{ steps.vars.outputs.chart_location }}/dev.values.yaml"
+
+      - name: test6
+        if: steps.check_files.outputs.files_exists == 'true'
+        # Only runs if all of the files exists
+        uses: igabaydulin/helm-check-action@0.1.4
+        env:
+          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
+          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/dev.values.yaml
+
+      - name: Check file existence2
+        id: check_files2
+        uses: andstor/file-existence-action@v1
+        with:
+          files: " ${{ steps.vars.outputs.chart_location }}/prod.values.yaml"
+
+      - name: test7
+        if: steps.check_files2.outputs.files_exists == 'true'
+        # Only runs if all of the files exists
+        uses: igabaydulin/helm-check-action@0.1.4
+        env:
+          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
+          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yaml
+
 #  check-dev-values:
 #    needs: get-chart-location
 #    if: ${{ hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml) }} != ''
