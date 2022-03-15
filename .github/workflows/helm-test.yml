@@ -56,7 +56,7 @@ jobs:
 
       - name: test5
         id: test5
-        run: echo "${{ hashFiles('${{ steps.vars.outputs.chart_location }}/dev.values.yaml') }}"
+        run: echo "${{ hashFiles('"${{ steps.vars.outputs.chart_location }}"/dev.values.yaml') }}"
 
 #  check-dev-values:
 #    needs: get-chart-location
