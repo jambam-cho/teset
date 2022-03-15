@@ -68,10 +68,21 @@ jobs:
           CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yamlocation.outputs.chart_location }}/prod.values.yaml)"
 
       - name: Comment on PR
+        if: ${{ success() }}
+        uses: allthatjazzleo/actions-pull-request-add-comment@master
+        with:
+          message: |-
+            Helm chart syntex 문제 없습니다..
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Comment on PR
         if: ${{ failure() }}
         uses: allthatjazzleo/actions-pull-request-add-comment@master
         with:
           message: |-
             Helm chart 실패했습니다.
+            ```
+            ${{ toJson(steps) }}
+            ```
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
