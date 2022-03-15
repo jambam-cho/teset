@@ -57,20 +57,20 @@ jobs:
 
       - name: test1
         id: test1
-        run: hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml)
+        run: ${{ hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml) }}
 
 
       - name: test3
         id: test3
-        run: hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml)
+        run: ${{ hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml) }}
 
       - name: test2
         id: test2
-        run: hashFiles(${{ steps.vars.outputs.chart_location }}/prod.values.yaml)
+        run: ${{ hashFiles(${{ steps.vars.outputs.chart_location }}/prod.values.yaml) }}
 
   check-dev-values:
     needs: get-chart-location
-    if: hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml) != ''
+    if: ${{ hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml) }} != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -82,7 +82,7 @@ jobs:
 
   check-prod-values:
     needs: get-chart-location
-    if: hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml) != ''
+    if: ${{ hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml) }} != ''
     runs-on: ubuntu-latest
     steps:
       - name: test2
