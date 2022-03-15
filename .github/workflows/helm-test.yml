@@ -57,7 +57,11 @@ jobs:
 
       - name: test1
         id: test1
-        run: ${{ hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml) }}
+        run: echo "${{ hashFiles('contents/garden/api/dev.values.yaml') }}"
+
+      - name: test4
+        id: test4
+        run: echo "${{ hashFiles('contents/garden/api/prod.values.yaml') }}"
 
 
       - name: test3
