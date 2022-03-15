@@ -64,35 +64,27 @@ jobs:
         run: echo "${{ hashFiles('contents/garden/api/prod.values.yaml') }}"
 
 
-      - name: test3
-        id: test3
-        run: ${{ hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml) }}
-
-      - name: test2
-        id: test2
-        run: ${{ hashFiles(${{ steps.vars.outputs.chart_location }}/prod.values.yaml) }}
-
-  check-dev-values:
-    needs: get-chart-location
-    if: ${{ hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml) }} != ''
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-
-      - uses: igabaydulin/helm-check-action@0.1.4
-        env:
-          CHART_LOCATION: ${{ needs.get-chart-location.outputs.chart_location }}
-          CHART_VALUES: ${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml
-
-  check-prod-values:
-    needs: get-chart-location
-    if: ${{ hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml) }} != ''
-    runs-on: ubuntu-latest
-    steps:
-      - name: test2
-        id: test2
-        run: echo "Hello~~~~~~~~~~~~~"
-
-      - name: test1
-        id: test1
-        run: echo "hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml)"
+#  check-dev-values:
+#    needs: get-chart-location
+#    if: ${{ hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml) }} != ''
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@master
+#
+#      - uses: igabaydulin/helm-check-action@0.1.4
+#        env:
+#          CHART_LOCATION: ${{ needs.get-chart-location.outputs.chart_location }}
+#          CHART_VALUES: ${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml
+#
+#  check-prod-values:
+#    needs: get-chart-location
+#    if: ${{ hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml) }} != ''
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: test2
+#        id: test2
+#        run: echo "Hello~~~~~~~~~~~~~"
+#
+#      - name: test1
+#        id: test1
+#        run: echo "hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml)"
