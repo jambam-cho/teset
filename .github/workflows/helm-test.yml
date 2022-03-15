@@ -28,85 +28,41 @@ jobs:
 
       - uses: actions/checkout@master
 
-      - name: test1
-        id: test1
-        run: echo "${{ hashFiles('contents/garden/api/dev.values.yaml') }}"
-
-      - name: test4
-        id: test4
-        run: echo "${{ hashFiles('contents/garden/api/prod.values.yaml') }}"
-
-#      - name: test2
-#        id: test2
-#        run: echo "${{ hashFiles(${{ steps.vars.outputs.chart_location }}/test.yaml) }}"
-
-#      안됌
-#      - name: test3
-#        id: test3
-#        run: echo "${{ hashFiles("${{ steps.vars.outputs.chart_location }}") }}"
-
-#      안됌
-#      - name: test3
-#        id: test3
-#        run: echo "${{ hashFiles( ${{ steps.vars.outputs.chart_location }} ) }}"
-
-      - name: test3
-        id: test3
-        run: echo "${{ hashFiles(' "${{ steps.vars.outputs.chart_location }}" ') }}"
-
-      - name: test5
-        id: test5
-        run: echo "${{ hashFiles('"${{ steps.vars.outputs.chart_location }}"/dev.values.yaml') }}"
-
-      - name: Check file existence
-        id: check_files
+      - name: Check dev-values existence
+        id: check_files_dev
         uses: andstor/file-existence-action@v1
         with:
           files: " ${{ steps.vars.outputs.chart_location }}/dev.values.yaml"
 
       - name: test6
-        if: steps.check_files.outputs.files_exists == 'true'
-        # Only runs if all of the files exists
+        if: steps.check_files_dev.outputs.files_exists == 'true'
         uses: igabaydulin/helm-check-action@0.1.4
         env:
           CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
           CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/dev.values.yaml
 
-      - name: Check file existence2
-        id: check_files2
+      - name: Check stage-values existence
+        id: check_files_stage
+        uses: andstor/file-existence-action@v1
+        with:
+          files: " ${{ steps.vars.outputs.chart_location }}/stage.values.yaml"
+
+      - name: test7
+        if: steps.check_files_stage.outputs.files_exists == 'true'
+        uses: igabaydulin/helm-check-action@0.1.4
+        env:
+          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
+          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/stage.values.yaml
+
+      - name: Check prod-values existence
+        id: check_files_prod
         uses: andstor/file-existence-action@v1
         with:
           files: " ${{ steps.vars.outputs.chart_location }}/prod.values.yaml"
 
-      - name: test7
-        if: steps.check_files2.outputs.files_exists == 'true'
-        # Only runs if all of the files exists
+      - name: test8
+        if: steps.check_files_prod.outputs.files_exists == 'true'
         uses: igabaydulin/helm-check-action@0.1.4
         env:
           CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
-          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yaml
-
-#  check-dev-values:
-#    needs: get-chart-location
-#    if: ${{ hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml) }} != ''
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@master
-#
-#      - uses: igabaydulin/helm-check-action@0.1.4
-#        env:
-#          CHART_LOCATION: ${{ needs.get-chart-location.outputs.chart_location }}
-#          CHART_VALUES: ${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml
-#
-#  check-prod-values:
-#    needs: get-chart-location
-#    if: ${{ hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml) }} != ''
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: test2
-#        id: test2
-#        run: echo "Hello~~~~~~~~~~~~~"
-#
-#      - name: test1
-#        id: test1
-#        run: echo "hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml)"
+          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yamlocation.outputs.chart_location }}/prod.values.yaml)"
