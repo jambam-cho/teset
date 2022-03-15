@@ -26,33 +26,6 @@ jobs:
         id: vars
         run: echo "::set-output name=chart_location::$(echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}')"
 
-#      - name: dev-values
-#        if: hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml) != ''
-#        uses: igabaydulin/helm-check-action@0.1.4
-#        env:
-#          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
-#          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/dev.values.yaml
-#
-#      - name: stage-values
-#        if: hashFiles(${{ steps.vars.outputs.chart_location }}/stage.values.yaml) != ''
-#        uses: igabaydulin/helm-check-action@0.1.4
-#        env:
-#          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
-#          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/stage.values.yaml
-
-#      - name: prod-values
-#        if: hashFiles(${{ steps.vars.outputs.chart_location }}/prod.values.yaml) != ''
-#        uses: igabaydulin/helm-check-action@0.1.4
-#        env:
-#          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
-#          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yaml
-
-#      - uses: actions/checkout@master
-#      - name: helm-check-2
-#        uses: igabaydulin/helm-check-action@0.1.4
-#        env:
-#          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
-#          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/test.yaml
       - uses: actions/checkout@master
 
       - name: test1
@@ -63,11 +36,13 @@ jobs:
         id: test4
         run: echo "${{ hashFiles('contents/garden/api/prod.values.yaml') }}"
 
+#      - name: test2
+#        id: test2
+#        run: echo "${{ hashFiles(${{ steps.vars.outputs.chart_location }}/test.yaml) }}"
+
       - name: test3
         id: test3
-        run: echo "${{ hashFiles('${{ steps.vars.outputs.chart_location }}') }}"
-
-
+        run: echo "${{ hashFiles("${{ steps.vars.outputs.chart_location }}") }}"
 
 
 #  check-dev-values:
