@@ -29,6 +29,15 @@ jobs:
         id: vars
         run: echo "::set-output name=chart_location::$(echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}')"
 
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: ''
+        id: install
+
+      - name: install kubeval
+        run: helm plugin install https://github.com/instrumenta/helm-kubeval
+
       - uses: actions/checkout@master
 
       - name: Check dev-values existence
@@ -72,6 +81,10 @@ jobs:
         env:
           CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
           CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yamlocation.outputs.chart_location }}/prod.values.yaml)"
+
+      - name: kubernetes yaml syntax
+        if: ${{ always() }}
+        uses: helm kubeval ${{ steps.vars.outputs.chart_location }}
 
       - name: Comment on PR
         id: test9
