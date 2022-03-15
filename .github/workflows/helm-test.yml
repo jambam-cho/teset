@@ -7,8 +7,10 @@ on:
       - main
 
 jobs:
-  slack-alert-deploy:
+  get-chart-location:
     runs-on: ubuntu-latest
+    outputs:
+      chart_location: ${{ steps.vars.outputs.chart_location }}
     steps:
       - name: get pull request ref
         id: get_pull_request_ref
@@ -24,28 +26,26 @@ jobs:
         id: vars
         run: echo "::set-output name=chart_location::$(echo "${{ fromJson(steps.get_pull_request_ref.outputs.data).body }}" | grep path | awk '{print $4}')"
 
-      - uses: actions/checkout@master
+#      - name: dev-values
+#        if: hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml) != ''
+#        uses: igabaydulin/helm-check-action@0.1.4
+#        env:
+#          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
+#          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/dev.values.yaml
+#
+#      - name: stage-values
+#        if: hashFiles(${{ steps.vars.outputs.chart_location }}/stage.values.yaml) != ''
+#        uses: igabaydulin/helm-check-action@0.1.4
+#        env:
+#          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
+#          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/stage.values.yaml
 
-      - name: dev-values
-        if: hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml) != ''
-        uses: igabaydulin/helm-check-action@0.1.4
-        env:
-          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
-          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/dev.values.yaml
-
-      - name: stage-values
-        if: hashFiles(${{ steps.vars.outputs.chart_location }}/stage.values.yaml) != ''
-        uses: igabaydulin/helm-check-action@0.1.4
-        env:
-          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
-          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/stage.values.yaml
-
-      - name: prod-values
-        if: hashFiles(${{ steps.vars.outputs.chart_location }}/prod.values.yaml) != ''
-        uses: igabaydulin/helm-check-action@0.1.4
-        env:
-          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
-          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yaml
+#      - name: prod-values
+#        if: hashFiles(${{ steps.vars.outputs.chart_location }}/prod.values.yaml) != ''
+#        uses: igabaydulin/helm-check-action@0.1.4
+#        env:
+#          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
+#          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/prod.values.yaml
 
 #      - uses: actions/checkout@master
 #      - name: helm-check-2
@@ -53,3 +53,27 @@ jobs:
 #        env:
 #          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
 #          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/test.yaml
+
+  check-dev-values:
+    needs: get-chart-location
+    if: hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml) != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: igabaydulin/helm-check-action@0.1.4
+        env:
+          CHART_LOCATION: ${{ needs.get-chart-location.outputs.chart_location }}
+          CHART_VALUES: ${{ needs.get-chart-location.outputs.chart_location }}/dev.values.yaml
+
+  check-prod-values:
+    needs: get-chart-location
+    if: hashFiles(${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml) != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: igabaydulin/helm-check-action@0.1.4
+        env:
+          CHART_LOCATION: ${{ needs.get-chart-location.outputs.chart_location }}
+          CHART_VALUES: ${{ needs.get-chart-location.outputs.chart_location }}/prod.values.yaml
