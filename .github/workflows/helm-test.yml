@@ -53,11 +53,12 @@ jobs:
 #        env:
 #          CHART_LOCATION: ${{ steps.vars.outputs.chart_location }}
 #          CHART_VALUES: ${{ steps.vars.outputs.chart_location }}/test.yaml
+      - uses: actions/checkout@master
+
       - name: test1
         id: test1
         run: hashFiles(${{ steps.vars.outputs.chart_location }}/dev.values.yaml)
 
-      - uses: actions/checkout@master
 
       - name: test3
         id: test3
