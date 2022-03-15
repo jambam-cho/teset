@@ -5,9 +5,9 @@ on:
     types: [opened]
     branches:
       - main
-  push:
-    branches:
-      - 'opsmon/template/**'
+#  push:
+#    branches:
+#      - 'opsmon/template/**'
 
 jobs:
   get-chart-location:
