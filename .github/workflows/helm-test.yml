@@ -7,7 +7,7 @@ on:
       - main
   push:
     branches:
-      - opsmon/template/**
+      - 'opsmon/template/**'
 
 jobs:
   get-chart-location:
