@@ -73,4 +73,5 @@ jobs:
         with:
           message: |-
             Helm chart 실패했습니다.
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
