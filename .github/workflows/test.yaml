@@ -8,14 +8,12 @@ jobs:
   logLatestRelease:
     runs-on: ubuntu-latest
     steps:
-      - name: Get count of commits ahead of merge base
+      - name: get pull request ref
         id: get_pull_request_ref
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/:repository/compare/:base...:head
+          route: GET /repos/:repository/pulls/:issue_id
+          repository: ${{ github.repository }}
+          issue_id: ${{ github.event.issue.number }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_REPOSITORY: ${{ github.repository }}
-          INPUT_BASE: ${{ github.base_ref }}
-          INPUT_HEAD: ${{ github.ref }}
-      - run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data) }}"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
