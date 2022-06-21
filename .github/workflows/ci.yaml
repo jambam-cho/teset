@@ -17,11 +17,11 @@ jobs:
         id: get_pull_request_ref
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/{owner}/{repo}/releases/latest
-          owner: jambam-cho
-          repo: teset
+          route: GET /repos/:repository/pulls/:issue_id
+          repository: ${{ github.repository }}
+          issue_id: ${{ github.event.issue.number }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Checkout
         uses: actions/checkout@v2
