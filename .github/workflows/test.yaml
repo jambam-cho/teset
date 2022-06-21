@@ -8,7 +8,13 @@ jobs:
   logLatestRelease:
     runs-on: ubuntu-latest
     steps:
-      - uses: kceb/pull-request-url-action@v1
-        id: pr-url
-
-      - run: echo "${{ steps.pr-url.outputs.url }}"
+      - name: get pull request ref
+        id: get_pull_request_ref
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/pulls/:issue_id
+          repository: ${{ github.repository }}
+          issue_id: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - run: echo "${{ fromJson(steps.get_pull_request_ref.outputs.data) }}"
