@@ -1,7 +1,8 @@
 name: Preview Service22
 
 on:
-  push:
+  pull_request:
+    types: [opened]
     branches:
       - main
 
